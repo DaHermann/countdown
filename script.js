@@ -44,4 +44,78 @@ function createOption(val,select){
 
 createOption(24,hourSelect);
 createOption(60,minitSelect);
-createOption(60,secondSelect)
+createOption(60,secondSelect);
+
+
+
+let timerDown = (hour)=>(min)=>async(second)=>{
+
+    if(hour===0 && min===0 && second===0){
+        // console.log("Stop timer");
+        showTime(hour, min, second);
+        // console.log(hour+' : '+min+' : '+second);
+        
+    }
+
+    if(second!=0){
+        let secondDown = await  setInterval(()=>{
+            second--
+            if(second==0){
+                clearInterval(secondDown);
+                return timerDown(hour)(min)(second);
+            }
+            // console.log(hour+' : '+min+' : '+second);
+            showTime(hour, min, second);
+        },100);
+
+    }
+
+    if( min!=0 && second==0){
+        showTime(hour, min, second);
+        return timerDown(hour)(--min)(59);
+        // console.log(hour+' : '+min+' : '+second);
+
+    }
+
+    if(hour!=0 && min==0 && second==0){
+        showTime(hour, min, second);
+        return timerDown(--hour)(59)(59);
+        // console.log(hour+' : '+min+' : '+second);
+
+    }
+}
+
+// timerDown(2)(2)(3);
+
+function showTime(hr, mn, sd){
+    hourDiv.textContent = hr<10?'0'+hr:hr;
+    minitDiv.textContent = mn<10?'0'+mn:mn;
+    secondDiv.textContent = sd<10?'0'+sd:sd;
+}
+
+
+
+
+btnStaStop.addEventListener('click',(e)=>{
+    e.preventDefault();
+
+    let hour = parseInt(hourSelect.value);
+    let minit = parseInt(minitSelect.value);
+    let second = parseInt(secondSelect.value);
+    let timerStart = false;
+    showTime(hour, minit, second);
+
+    if(!timerStart){
+        timerStart = true;
+        timerDown(hour)(minit)(second);
+        console.log('hour : '+hour);
+        console.log('minit : '+minit);
+        console.log('second : '+second);
+        e.target.textContent = 'Stop';
+        e.target.style.backgroudColor = 'red';
+    }else{
+        e.target.textContent = 'Start';
+        e.target.style.backgroudColor = 'yellow';
+    }
+
+})
