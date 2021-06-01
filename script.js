@@ -47,12 +47,15 @@ createOption(60,minitSelect);
 createOption(60,secondSelect);
 
 
+let timerStart = false;
+let timer;
 
 let timerDown = (hour)=>(min)=>async(second)=>{
 
     if(hour===0 && min===0 && second===0){
         // console.log("Stop timer");
         showTime(hour, min, second);
+        // alert('Time out!!!!!');
         // console.log(hour+' : '+min+' : '+second);
         
     }
@@ -66,7 +69,7 @@ let timerDown = (hour)=>(min)=>async(second)=>{
             }
             // console.log(hour+' : '+min+' : '+second);
             showTime(hour, min, second);
-        },100);
+        },5);
 
     }
 
@@ -93,6 +96,9 @@ function showTime(hr, mn, sd){
     secondDiv.textContent = sd<10?'0'+sd:sd;
 }
 
+function btnToggle(staus){
+    return;
+}
 
 
 
@@ -102,20 +108,23 @@ btnStaStop.addEventListener('click',(e)=>{
     let hour = parseInt(hourSelect.value);
     let minit = parseInt(minitSelect.value);
     let second = parseInt(secondSelect.value);
-    let timerStart = false;
     showTime(hour, minit, second);
 
-    if(!timerStart){
+    if(timerStart){
+        timerStart = false;
+        clearTimeout(timer);
+        e.target.textContent = 'Start';
+        e.target.style.color = 'rgb(99, 91, 91)';
+        e.target.style.backgroundColor = 'rgb(255, 251, 0)';
+    }else{
         timerStart = true;
-        timerDown(hour)(minit)(second);
+        timer = setTimeout(timerDown(hour)(minit)(second),1);
         console.log('hour : '+hour);
         console.log('minit : '+minit);
         console.log('second : '+second);
         e.target.textContent = 'Stop';
-        e.target.style.backgroudColor = 'red';
-    }else{
-        e.target.textContent = 'Start';
-        e.target.style.backgroudColor = 'yellow';
+        e.target.style.color = '#fff';
+        e.target.style.backgroundColor = 'crimson';
     }
-
+    return;
 })
